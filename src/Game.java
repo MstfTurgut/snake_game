@@ -14,15 +14,14 @@ import java.util.logging.Logger;
 
 public class Game extends JPanel implements KeyListener, ActionListener {
 
-    Timer timer = new Timer(100 , this);
+    Timer timer = new Timer(100, this); // Timer to control game updates
     Random random = new Random();
 
-    private final int snakeDir = 20;
     Snake snake = new Snake();
 
     private int pointX = 500;
     private int pointY = 500;
-    private int pointCount = 0;
+    private int pointCount = 0; // Initial point coordinates and count
 
 
     public Game() {
@@ -36,22 +35,23 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
         g.setColor(Color.white);
 
-        g.drawString("Score : " + pointCount , 20 , 20);
+        g.drawString("Score : " + pointCount , 20 , 20); // Display the current score
 
+        // Draw the snake
         for(int i = 0; i < snake.snakeArray.size() ; i++) {
 
             if(i == 0) {
-                g.setColor(Color.decode("#8E8F24"));
+                g.setColor(Color.decode("#8E8F24")); // Head of the snake
                 g.fillRect(snake.snakeArray.get(i).x , snake.snakeArray.get(i).y , 20 , 20);
             }else {
-                g.setColor(Color.decode("#747514"));
+                g.setColor(Color.decode("#747514")); // Body of the snake
                 g.fillRect(snake.snakeArray.get(i).x , snake.snakeArray.get(i).y , 20 , 20);
             }
         }
 
         g.setColor(Color.decode("#4C1B5F"));
 
-        g.fillOval(pointX , pointY , 15 , 15);
+        g.fillOval(pointX , pointY , 15 , 15); // Draw the point
     }
 
     public boolean snakeAtePoint() {
@@ -67,16 +67,13 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
         SnakeBlock head = sa.get(0);
 
+        // Check if the head collides with the body
         for (int i = 1 ; i < sa.size() ; i++) {
-
             SnakeBlock bodyBlock = sa.get(i);
-
             if(new Rectangle(head.x , head.y , 20 , 20).intersects(new Rectangle(bodyBlock.x , bodyBlock.y , 20 , 20))) {
                 return true;
             }
-
         }
-
         return false;
     }
 
@@ -86,17 +83,18 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         SnakeBlock head = snake.snakeArray.get(0);
         ArrayList<SnakeBlock> sa = snake.snakeArray;
 
-        switch (snake.direction) {
+        int snakeDir = 20;
+        switch (snake.direction) {  // Move the snake up, down, left, right
             case UP -> {
-                 if(head.y > 0) {
-                     for(int i = sa.size() - 1 ; i > 0 ; i--) {
-                         sa.get(i).x = sa.get(i - 1).x;
-                         sa.get(i).y = sa.get(i - 1).y;
-                     }
-                     head.y -= snakeDir;
-                 } else {
-                     head.y = 540;
-                 }
+                if(head.y > 0) {
+                    for(int i = sa.size() - 1 ; i > 0 ; i--) {
+                        sa.get(i).x = sa.get(i - 1).x;
+                        sa.get(i).y = sa.get(i - 1).y;
+                    }
+                    head.y -= snakeDir;
+                } else {
+                    head.y = 540;
+                }
             }
             case DOWN -> {
                 if(head.y < 540) {
@@ -136,19 +134,19 @@ public class Game extends JPanel implements KeyListener, ActionListener {
 
         if(snakeAtePoint()) {
 
-            // point count ++
+            // Increase the score
 
             pointCount++;
 
-            //sound effect
+            // Sound effect
 
             soundEffect("eating.wav");
 
-            // increase snake length
+            // Increase snake length
 
             snake.increaseSize();
 
-            // point x and y change
+            // Move the point to a new random location
 
             pointX = random.nextInt(750);
             pointY = random.nextInt(535);
@@ -161,7 +159,7 @@ public class Game extends JPanel implements KeyListener, ActionListener {
             timer.stop();
 
             String message = "GAME OVER :/"
-                            + "\n Your Score : " + pointCount;
+                    + "\n Your Score : " + pointCount;
 
             soundEffect("gameover.wav");
 
@@ -176,6 +174,8 @@ public class Game extends JPanel implements KeyListener, ActionListener {
     public void keyPressed(KeyEvent e) {
 
         int c = e.getKeyCode();
+
+        // Change snake direction based on key input
 
         if(c == KeyEvent.VK_RIGHT && snake.direction != Direction.LEFT) {
             snake.direction = Direction.RIGHT;
@@ -222,5 +222,4 @@ public class Game extends JPanel implements KeyListener, ActionListener {
         }
     }
 }
-
 
